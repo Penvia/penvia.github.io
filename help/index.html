@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Penvia Help Center | Setup & Troubleshooting Guide</title>
+    <link rel="icon" type="image/png" href="/graphics/misc7-1024.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="Penvia Help Center | Setup & Troubleshooting Guide">
+    <meta name="description" content="Get started with Penvia. Step-by-step guides for connecting your Android stylus to Windows/Linux, fixing latency issues, and configuring pressure sensitivity.">
+    <meta name="keywords" content="Penvia setup, connect android stylus to pc, Penvia troubleshooting, stylus pressure not working, Penvia Linux guide, low latency settings">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="Penvia Team">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph / Facebook (Help Center Specific) -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://penvia.github.io/help">
+    <meta property="og:title" content="Penvia Documentation: Setup & Optimization Guide">
+    <meta property="og:description" content="Need help? Learn how to turn your Android device into a professional PC peripheral with our easy setup and troubleshooting guides.">
+    <meta property="og:image" content="https://penvia.github.io/graphics/og-help.png">
+
+    <!-- Twitter (Help Center Specific) -->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:url" content="https://penvia.github.io/help">
+    <meta property="twitter:title" content="Penvia Support | Help & Documentation">
+    <meta property="twitter:description" content="Step-by-step guides to ensure zero-lag stylus input from your Android device to your desktop.">
+    <meta property="twitter:image" content="https://penvia.github.io/graphics/og-help.png">
+
+    <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{
+            "@type": "Question",
+            "name": "How do I connect Penvia to my PC?",
+            "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can connect Penvia via USB or Wi-Fi. For the lowest latency, a USB connection is recommended."
+            }
+        }, {
+            "@type": "Question",
+            "name": "Does Penvia support pressure sensitivity?",
+            "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Penvia supports full pressure sensitivity and tilt, provided your Android device and stylus hardware support these features."
+            }
+        }]
+        }
+    </script>
+    
+    <!-- Canonical Link (Prevents duplicate content issues) -->
+    <link rel="canonical" href="https://penvia.github.io/help">
+    <link href="/src/output.css" rel="stylesheet">
+    <link href="/src/aos.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #050505;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(88, 28, 135, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(30, 64, 175, 0.25) 0%, transparent 50%);
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        
+        .glow-accent {
+            box-shadow: 0 0 50px -10px rgba(99, 102, 241, 0.15);
+        }
+
+        #penCanvas {
+            filter: blur(0.5px) drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+            opacity: 0.8;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="hero-bg">
+    <div class="flex flex-col mb-4">
+        <nav class="p-6 max-w-7xl mx-auto flex justify-between items-center z-50">
+            <a href="/" class="flex items-center">
+                <img src="/graphics/misc7-1024.png" alt="Penvia Logo" class="w-10 h-10 object-contain">
+                <span class="text-2xl font-bold gradient-text tracking-tight">Penvia</span>
+            </a>
+        </nav>
+    </div>
+    <main class="max-w-6xl mx-auto px-6 py-12 text-slate-300">
+    <section class="text-center mb-16" data-aos="fade-down">
+        <h1 class="text-5xl font-extrabold mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-blue-500 bg-clip-text text-transparent">
+            Bridge Diagnostic Center
+        </h1>
+        <div class="inline-block p-px rounded-xl bg-linear-to-r from-blue-500/50 to-purple-500/50">
+            <div class="px-6 py-3 rounded-xl bg-[#050505] flex items-center gap-3">
+                <span class="text-purple-400 font-bold">Pro Tip:</span>
+                <p class="text-sm text-slate-400">Most of discovery issues are fixed by restarting both the Android App and the Server Executable.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+        <div class="p-5 rounded-xl bg-slate-900/30 border border-slate-800 hover:border-purple-500/40 transition-all" data-aos="zoom-in" data-aos-delay="400">
+            <h4 class="text-purple-400 font-bold mb-2 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-purple-500"></span> Wrong Wi-Fi
+            </h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Ensure that the server and client are on the same Wi-Fi, also check if the computer has Wi-Fi turned on.</p>
+        </div>
+        
+        <div class="p-5 rounded-xl bg-slate-900/30 border border-slate-800 hover:border-blue-500/40 transition-all" data-aos="zoom-in" data-aos-delay="100">
+            <h4 class="text-blue-400 font-bold mb-2 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span> Network Profile
+            </h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Ensure your Windows Network is set to <strong>Private</strong>. Public profiles block the UDP broadcasts needed for discovery.</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900/30 border border-slate-800 hover:border-purple-500/40 transition-all" data-aos="zoom-in" data-aos-delay="200">
+            <h4 class="text-purple-400 font-bold mb-2 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-purple-500"></span> VPN / Proxy
+            </h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Active VPNs create virtual adapters that confuse discovery. Disable them while using the bridge.</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900/30 border border-slate-800 hover:border-blue-500/40 transition-all" data-aos="zoom-in" data-aos-delay="300">
+            <h4 class="text-blue-400 font-bold mb-2 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span> Permissions
+            </h4>
+            <p class="text-xs text-slate-500 leading-relaxed">Check Android "Nearby Devices" or "Local Network" permissions if prompted. Check Windows Firewall logs.</p>
+        </div>
+
+    </section>
+
+    <section class="mb-20 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/10" data-aos="fade-up">
+        <div class="p-6 border-b border-slate-800 bg-slate-900/20">
+            <h3 class="text-xl font-bold">Server & Hardware Conflicts</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-slate-500 text-sm bg-slate-900/40">
+                        <th class="p-4 font-medium">Issue Category</th>
+                        <th class="p-4 font-medium">Symptom</th>
+                        <th class="p-4 font-medium">Recommended Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+
+                    <tr class="hover:bg-blue-500/5 transition-colors">
+                        <td class="p-4 text-sm font-semibold text-blue-300">Input Drivers</td>
+                        <td class="p-4 text-sm text-slate-400">Pressure/Tilt not working</td>
+                        <td class="p-4 text-sm">Switch from <code class="bg-slate-800 px-1 rounded text-purple-300">Wintab</code> to <code class="bg-slate-800 px-1 rounded text-blue-300">Windows Ink</code> in settings.</td>
+                    </tr>
+
+                    <tr class="hover:bg-purple-500/5 transition-colors">
+                        <td class="p-4 text-sm font-semibold text-purple-300">Multi-Monitor</td>
+                        <td class="p-4 text-sm text-slate-400">Drawing on wrong screen</td>
+                        <td class="p-4 text-sm">App targets the <strong>Primary Monitor</strong>. Verify primary display in Windows Settings or report if dynamic swap fails.</td>
+                    </tr>
+
+                    <tr class="hover:bg-blue-500/5 transition-colors">
+                        <td class="p-4 text-sm font-semibold text-blue-300">OS Version</td>
+                        <td class="p-4 text-sm text-slate-400">Service won't start</td>
+                        <td class="p-4 text-sm">Windows 10/11 required. Check server console for specific <span class="text-red-400">Kernel Errors</span>.</td>
+                    </tr>
+
+                    <tr class="hover:bg-purple-500/5 transition-colors">
+                        <td class="p-4 text-sm font-semibold text-purple-300">Android System</td>
+                        <td class="p-4 text-sm text-slate-400">Sudden disconnects</td>
+                        <td class="p-4 text-sm">Disable "Battery Optimization" for the app. Android may be killing the background process.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8" data-aos="fade-up">
+        <div class="p-8 rounded-2xl bg-linear-to-br from-slate-900 to-[#050505] border border-slate-800 flex flex-col justify-between">
+            <div>
+                <h3 class="text-2xl font-bold mb-4">Check Server Console</h3>
+                <p class="text-slate-400 text-sm mb-6">If the server encounters a critical error, it will log the details in the terminal window. Copy the terminal lines before reporting.</p>
+            </div>
+            <a href="/docs/" class="w-max text-blue-400 hover:text-blue-300 font-medium flex items-center gap-2">
+                Check docs <span class="text-xs">→</span>
+            </a>
+        </div>
+
+        <div class="p-8 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex flex-col items-center text-center justify-center">
+            <h3 class="text-2xl font-bold mb-2">Still No Connection?</h3>
+            <p class="text-slate-400 text-sm mb-6">Our Discord community can help decode specific router or firewall edge cases.</p>
+            <a href="https://discord.gg/uxG2kqGzUX" class="bg-blue-600 hover:bg-blue-500 text-white px-10 py-3 rounded-xl font-bold transition-transform active:scale-95 shadow-lg shadow-blue-900/20">
+                Open Discord Support
+            </a>
+        </div>
+    </section>
+
+</main>
+
+    <footer class="py-20 text-center border-t border-slate-900">
+        <p class="text-slate-500 mb-4">Join the beta and help us refine the bridge.</p>
+        <div class="flex justify-center space-x-6">
+            <a href="https://discord.gg/uxG2kqGzUX" class="hover:text-white transition">Discord</a>
+            <a href="https://github.com/Penvia" class="hover:text-white transition">GitHub</a>
+        </div>
+        <p class="mt-10 text-xs text-slate-600">© 2026 Vulpi. All rights reserved.</p>
+    </footer>
+
+    <script src="/src/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+        });
+    </script>
+</body>
+</html>

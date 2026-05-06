@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Penvia | Fast & Lightweight Input Bridge</title>
+    <link rel="icon" type="image/png" href="/graphics/misc7-1024.png">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="Penvia | Fast & Lightweight Input Bridge">
+    <meta name="description" content="Free, ultra-lightweight input bridge for Windows & Linux. Turn your Android stylus into a pro graphics tablet with zero ads, low latency, and full pressure support.">
+    <meta name="keywords" content="Android stylus to PC, pen pressure bridge, low latency input, virtual tablet, Penvia, drawing tablet app, Linux stylus support, palm rejection, USB graphics tablet">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="Penvia Team">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://penvia.github.io/">
+    <meta property="og:title" content="Penvia | Your Android Stylus, Now on PC">
+    <meta property="og:description" content="Free, professional-grade input bridge with zero ads. Ultra-lightweight with full pressure and tilt support over Wi-Fi or USB.">
+    <meta property="og:image" content="https://penvia.github.io/graphics/og-promo.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://penvia.github.io/">
+    <meta property="twitter:title" content="Penvia | Low-Latency Input Bridge (Free & Ad-Free)">
+    <meta property="twitter:description" content="Turn your Android device into a professional 14MB PC peripheral. Zero lag, cross-platform, and built for artists.">
+    <meta property="twitter:image" content="https://penvia.github.io/graphics/og-promo.png">
+
+    <script type="application/ld+json">
+    [
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Penvia",
+        "operatingSystem": "Windows 10, Windows 11, Linux, Android",
+        "applicationCategory": "MultimediaApplication",
+        "fileSize": "10MB",
+        "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD"
+        },
+        "description": "A high-performance, lightweight input bridge. Turn Android into a PC graphics tablet with native Windows support, multi-monitor awareness, and zero ads."
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Is Penvia free to use?",
+            "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Penvia is 100% free to use. There are no annoying ads, no popups, and no tracking—just a clean, professional workflow for artists, students, and teachers."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How lightweight is the Penvia installation?",
+            "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Penvia is designed for maximum efficiency. The Windows/Linux server is only 10MB, and the Android client is a tiny 4MB. It has a minimal RAM footprint and supports headless operation for background use."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does Penvia support professional pen features?",
+            "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Penvia provides full support for Pressure sensitivity, X/Y Tilt, side buttons, and a 'Pen-only' rejection mode to ensure your stylus feels like it is connected directly to your desktop."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I use Penvia with multiple monitors?",
+            "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely. Penvia features dynamic multi-monitor awareness and precise coordinate mapping, allowing you to draw in your multi-screen setup without lag."
+            }
+        }
+        ]
+    }
+    ]
+    </script>
+
+    <!-- Canonical Link (Prevents duplicate content issues) -->
+    <link rel="canonical" href="https://penvia.github.io/">
+    <link href="/src/output.css" rel="stylesheet">
+    <link href="/src/aos.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #050505;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(88, 28, 135, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(30, 64, 175, 0.25) 0%, transparent 50%);
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        
+        .glow-accent {
+            box-shadow: 0 0 50px -10px rgba(99, 102, 241, 0.15);
+        }
+
+        #penCanvas {
+            filter: blur(0.5px) drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+            opacity: 0.8;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="hero-bg">
+    <canvas id="penCanvas" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></canvas>
+    <div class="min-h-screen flex flex-col">
+        <nav class="w-full p-6 max-w-7xl mx-auto flex justify-between items-center z-50">
+            <div class="flex items-center">
+                <img src="/graphics/misc7-1024.png" alt="Penvia Logo" class="w-10 h-10 object-contain">
+                <span class="text-2xl font-bold gradient-text tracking-tight">Penvia</span>
+            </div>
+            <div class="space-x-8 hidden md:flex items-center">
+                <a href="#beta-access" class="text-slate-300 hover:text-purple-400 transition font-medium">Features</a>
+                <a href="#planned" class="text-slate-300 hover:text-blue-400 transition font-medium">Planned</a>
+                <a href="/help/" class="text-slate-300 hover:text-blue-400 transition font-medium">Help Center</a>
+                <a href="https://github.com/Penvia" class="bg-purple-600/20 border border-purple-500/50 px-5 py-2 rounded-full text-purple-100 font-medium hover:bg-purple-600 hover:text-white transition">View on GitHub</a>
+            </div>
+        </nav>
+        <header class="grow flex flex-col justify-center items-center text-center px-4 -mt-20">
+            <h1 class="text-6xl md:text-8xl font-black mb-6 tracking-tight" data-aos="zoom-out" data-aos-duration="1000">
+                Your Stylus, <br><span class="gradient-text">Unleashed.</span>
+            </h1>
+            
+            <p class="max-w-2xl text-lg md:text-xl text-slate-400 mb-10" data-aos="fade-up" data-aos-delay="300">
+                Penvia is a low-latency communication bridge that transforms your Android device into a high-performance peripheral for your PC. 
+            </p>
+            
+            <div class="flex space-x-4" data-aos="fade-up" data-aos-delay="500">
+                <a href="download/" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-bold transition shadow-lg shadow-blue-900/20">Download Beta</a>
+                <a href="docs/" class="border border-slate-700 hover:border-purple-500 px-8 py-3 rounded-lg font-bold transition">Read Docs</a>
+            </div>
+        </header>
+    </div>
+    <section id="beta-access" class="max-w-7xl mx-auto py-24 px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+                    <div class="lg:sticky lg:top-24 space-y-8" data-aos="fade-right">
+                <div>
+                    <h2 class="text-4xl font-bold mb-4">Join the <span class="gradient-text text-5xl block mt-2">v1.0.0-beta.1</span></h2>
+                    <p class="text-slate-400 leading-relaxed">
+                        Penvia is currently in an active testing phase. We are looking for artists, teachers, and developers to help us perfect the bridge before the stable release.
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    <a href="https://discord.gg/uxG2kqGzUX" class="flex items-center justify-center space-x-3 w-full bg-[#5865F2] hover:bg-[#4752C4] text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-500/20 group">
+                        <span>Join the Discord</span>
+                        <img src="./graphics/Discord-Symbol-White.svg" class="w-6 h-6">
+                    </a>
+                    <a href="https://github.com/Penvia" class="flex items-center justify-center space-x-3 w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl font-bold transition-all">
+                        <span>Report Issues on GitHub</span>
+                        <img src="./graphics/GitHub_Invertocat_White.svg" class="w-6 h-6">
+                    </a>
+                </div>
+
+                <div class="p-4 rounded-xl bg-red-500/5 border border-red-500/10">
+                    <p class="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Stability Status</p>
+                    <p class="text-xs text-red-400/80">Beta release: No backwards compatibility guaranteed between minor versions.</p>
+                </div>
+            </div>
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4" data-aos="fade-left">
+                <div class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-white/5 hover:border-blue-500/30 transition-all">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400 font-bold text-xs">OS</div>
+                        <h3 class="font-bold text-white">Windows 10/11</h3>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">✓</span> 100% Native support
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">✓</span> Dynamic multi-monitor awareness
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-white/5 hover:border-purple-500/30 transition-all">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-2 bg-purple-500/10 rounded-lg text-purple-400 font-bold text-xs">PEN</div>
+                        <h3 class="font-bold text-white">Advanced Input</h3>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">✓</span> Pressure & X/Y Tilt support
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">✓</span> Precise coordinate mapping
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">✓</span> "Pen-only" rejection mode
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-white/5 hover:border-blue-500/30 transition-all">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400 font-bold text-xs">NET</div>
+                        <h3 class="font-bold text-white">Connectivity</h3>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">✓</span> UDP & TCP Wi-Fi Protocols
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">✓</span> Automatic server discovery
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-500 mr-2">✓</span> Intelligent reconnection logic
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-900/40 backdrop-blur-md border border-white/5 hover:border-purple-500/30 transition-all">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="p-2 bg-purple-500/10 rounded-lg text-purple-400 font-bold text-xs">SRV</div>
+                        <h3 class="font-bold text-white">System Architecture</h3>
+                    </div>
+                    <ul class="text-sm text-slate-400 space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">✓</span> Headless background operation
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">✓</span> Customizeable log levels
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2">✓</span> Multiple simultaneous links
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section class="max-w-5xl mx-auto py-24 px-6" id="planned">
+        <div class="p-10 rounded-4xl bg-slate-900/40 backdrop-blur-xl border border-white/10 shadow-2xl relative">
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-12">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3 animate-pulse shadow-[0_0_10px_#3b82f6]"></span>
+                        Development Pipeline
+                    </h2>
+                    <span class="text-xs font-mono text-slate-500 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                        Release Cycle: 1.0.0-beta.x
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">                
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-mono text-slate-500 uppercase tracking-tighter mb-6">In Active Development</h3>
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-200 font-medium">USB Connectivity</span>
+                            <span class="text-[10px] font-bold text-blue-400 bg-blue-400/10 px-2 py-1 rounded uppercase tracking-widest border border-blue-400/20">Ongoing</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-200 font-medium">Linux Bridge Support</span>
+                            <span class="text-[10px] font-bold text-blue-400 bg-blue-400/10 px-2 py-1 rounded uppercase tracking-widest border border-blue-400/20">Ongoing</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5">
+                            <span class="text-slate-200 font-medium">Full Finger / Touch</span>
+                            <span class="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded uppercase tracking-widest border border-amber-400/20">Refining</span>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-mono text-slate-500 uppercase tracking-tighter mb-6">Planned for v1.x</h3>
+                        
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-transparent border border-white/5 opacity-60">
+                            <span class="text-slate-400">Screen Mirroring</span>
+                            <span class="text-[10px] font-bold text-slate-500 border border-slate-700 px-2 py-1 rounded uppercase">Wishlist</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-transparent border border-white/5 opacity-60">
+                            <span class="text-slate-400">On-screen Hotkeys (Ctrl+Z)</span>
+                            <span class="text-[10px] font-bold text-slate-500 border border-slate-700 px-2 py-1 rounded uppercase">Wishlist</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-transparent border border-white/5 opacity-60">
+                            <span class="text-slate-400">Custom Gestures</span>
+                            <span class="text-[10px] font-bold text-slate-500 border border-slate-700 px-2 py-1 rounded uppercase">Planned</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12 p-6 rounded-2xl bg-red-500/5 border border-red-500/10 flex items-start space-x-4">
+                    <div class="text-red-500 mt-1">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <div class="text-xs text-slate-500 leading-relaxed">
+                        <p class="font-bold text-slate-300 uppercase mb-1">Stability Notice</p>
+                        Not guarantees of backwards compatibility for <span class="text-red-400">1.0.0-beta.x</span> versions. 
+                        Expect breaking changes between minor beta updates until the stable v1.0.0 release.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-4xl mx-auto py-24 px-6 text-center">
+        <div class="p-12 rounded-[3rem] bg-linear-to-b from-blue-600/20 to-purple-600/20 border border-white/10 backdrop-blur-sm relative overflow-hidden" data-aos="zoom-in">
+            <h2 class="text-4xl font-bold mb-6">Ready to Sketch?</h2>
+            <p class="text-slate-300 mb-10 max-w-lg mx-auto">
+                Experience the lowest latency input bridge ever built for Android and Windows. Join the beta today.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="download/" class="bg-white text-black px-10 py-4 rounded-2xl font-bold hover:bg-slate-200 transition">Download 1.0.0-beta.1</a>
+                <a href="https://discord.gg/uxG2kqGzUX" class="bg-white/10 border border-white/10 px-10 py-4 rounded-2xl font-bold hover:bg-white/20 transition">Join Discord</a>
+            </div>
+            <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-500/30 blur-[80px]"></div>
+        </div>
+    </section>
+    <footer class="py-20 text-center border-t border-slate-900">
+        <p class="text-slate-500 mb-4">Join the beta and help us refine the bridge.</p>
+        <div class="flex justify-center space-x-6">
+            <a href="https://discord.gg/uxG2kqGzUX" class="hover:text-white transition">Discord</a>
+            <a href="https://github.com/Penvia" class="hover:text-white transition">GitHub</a>
+        </div>
+        <p class="mt-10 text-xs text-slate-600">© 2026 Vulpi. All rights reserved.</p>
+    </footer>
+
+    <script src="./src/aos.js"></script>
+    <script>
+        const canvas = document.getElementById('penCanvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        const maxPoints = 70; 
+
+        let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        let cursor = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        let lastMoveTime = Date.now();
+        let angle = 0; // For idle animation
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            lastMoveTime = Date.now();
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const now = Date.now();
+            const isIdle = now - lastMoveTime > 2000;
+
+            if (isIdle) {
+                angle += 0.015;
+                mouse.x = (window.innerWidth / 2) + Math.cos(angle) * (window.innerWidth * 0.3);
+                mouse.y = (window.innerHeight / 2) + Math.sin(angle * 2) * (window.innerHeight * 0.2);
+            }
+
+            cursor.x += (mouse.x - cursor.x) * 0.12;
+            cursor.y += (mouse.y - cursor.y) * 0.12;
+
+            points.push({ ...cursor });
+            if (points.length > maxPoints) points.shift();
+
+            if (points.length > 2) {
+                const grad = ctx.createLinearGradient(
+                    points[0].x, points[0].y, 
+                    points[points.length-1].x, points[points.length-1].y
+                );
+                grad.addColorStop(0, "rgba(96, 165, 250, 0)");      // Fade in Blue
+                grad.addColorStop(0.5, "rgba(168, 85, 247, 0.5)"); // Purple Middle
+                grad.addColorStop(1, "rgba(96, 165, 250, 0.8)");   // Bright Blue Tip
+
+                ctx.beginPath();
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                ctx.moveTo(points[0].x, points[0].y);
+
+                // Quadratic Curve for maximum smoothness
+                for (let i = 1; i < points.length - 2; i++) {
+                    const xc = (points[i].x + points[i + 1].x) / 2;
+                    const yc = (points[i].y + points[i + 1].y) / 2;
+                    ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+                }
+                
+                // Curve through the last two points
+                ctx.quadraticCurveTo(
+                    points[points.length - 2].x, 
+                    points[points.length - 2].y, 
+                    points[points.length - 1].x, 
+                    points[points.length - 1].y
+                );
+
+                ctx.stroke();
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        resize();
+        animate();
+    </script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+        });
+    </script>
+</body>
+</html>

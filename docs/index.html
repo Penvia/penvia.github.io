@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Penvia Documentation | Technical Guide & Protocol</title>
+    <link rel="icon" type="image/png" href="/graphics/misc7-1024.png">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="Penvia Documentation | Technical Guide & Protocol">
+    <meta name="description" content="Technical deep-dive into Penvia's low-latency UDP protocol, auto-discovery system, and command-line automation for Windows and Linux.">
+    <meta name="keywords" content="Penvia protocol, UDP input bridge, stylus auto-discovery, Penvia CLI arguments, server logs, technical documentation">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="author" content="Penvia Team">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://penvia.github.io/docs">
+    <meta property="og:title" content="Penvia Technical Docs: High-Speed Input Relay">
+    <meta property="og:description" content="Explore how Penvia achieves ultra-low latency using optimized UDP packets and automated server discovery.">
+    <meta property="og:image" content="https://penvia.github.io/graphics/og-docs.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:title" content="Penvia Docs | Technical Protocol">
+    <meta property="twitter:description" content="Deep dive into the high-fidelity input data relay and server automation.">
+
+    <script type="application/ld+json">
+    [
+    {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "How Penvia Auto-Discovery Works",
+        "description": "A simple three-step process for connecting the Android client to the PC server without manual IP entry.",
+        "step": [
+        {
+            "@type": "HowToStep",
+            "name": "Discovery Request",
+            "text": "The client sends out a broadcast discovery request to find active servers on the network."
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Server Response",
+            "text": "Any active server seeing the packet sends a response with its connection info."
+        },
+        {
+            "@type": "HowToStep",
+            "name": "Selection",
+            "text": "The client displays a list of available servers for the user to join."
+        }
+        ]
+    },
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Penvia High-Speed Input Relay Protocol",
+        "description": "The Android client captures pressure, tilt, and coordinates, packaging them into optimized UDP packets for the desktop server.",
+        "dependencies": "UDP Port, ADB (optional for USB)",
+        "proficiencyLevel": "Intermediate"
+    }
+    ]
+    </script>
+
+    <!-- Canonical Link (Prevents duplicate content issues) -->
+    <link rel="canonical" href="https://penvia.github.io/docs">
+    <link href="/src/output.css" rel="stylesheet">
+    <link href="/src/aos.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #050505;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(88, 28, 135, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(30, 64, 175, 0.25) 0%, transparent 50%);
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        
+        .glow-accent {
+            box-shadow: 0 0 50px -10px rgba(99, 102, 241, 0.15);
+        }
+
+        #penCanvas {
+            filter: blur(0.5px) drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+            opacity: 0.8;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="hero-bg">
+    <div class="flex flex-col mb-4">
+        <a href="/" class="p-6 max-w-7xl mx-auto flex justify-between items-center z-50">
+            <div class="flex items-center">
+                <img src="/graphics/misc7-1024.png" alt="Penvia Logo" class="w-10 h-10 object-contain">
+                <span class="text-2xl font-bold gradient-text tracking-tight">Penvia</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12 text-slate-300">
+    
+    <aside class="lg:w-64 shrink-0" data-aos="fade-right">
+        <nav class="sticky top-10 space-y-8">
+            <div>
+                <h5 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Architecture</h5>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#how-it-works" class="hover:text-blue-400 transition-colors border-l-2 border-blue-500/30 pl-4">How it Works</a></li>
+                    <li><a href="#discovery" class="hover:text-slate-100 transition-colors border-l-2 border-transparent pl-4">Discovery Protocol</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Server Usage</h5>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#logging" class="hover:text-slate-100 transition-colors border-l-2 border-transparent pl-4">Logging & Debug</a></li>
+                    <li><a href="#cli" class="hover:text-slate-100 transition-colors border-l-2 border-transparent pl-4">CLI Arguments</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Developers</h5>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#api" class="text-slate-600 cursor-not-allowed border-l-2 border-transparent pl-4 italic">API (Coming Soon)</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <section class="flex-1 max-w-3xl" data-aos="fade-up">
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold text-white mb-4">Documentation</h1>
+            <p class="text-lg text-slate-400">Understanding the bridge between your Android device and Windows environment.</p>
+        </header>
+        <article id="how-it-works" class="mb-16">
+            <h2 class="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-3">
+                <span class="p-2 rounded bg-blue-500/10">01</span> How it Works
+            </h2>
+            <div class="prose prose-invert prose-slate">
+                <p class="mb-4 leading-relaxed">
+                    The bridge operates as a high-speed relay. The Android client captures input data (including pressure, tilt, and coordinates) and packages it into optimized UDP packets sent to the desktop server.
+                </p>
+                <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800 mb-4">
+                    <ul class="space-y-4">
+                        <li class="flex gap-4">
+                            <span class="text-purple-500 font-mono font-bold whitespace-nowrap">Step 1:</span>
+                            <span>Server initializes a listener on a specific UDP port.</span>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="text-purple-500 font-mono font-bold whitespace-nowrap">Step 2:</span>
+                            <span>Client sends a handshake request to the server.</span>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="text-purple-500 font-mono font-bold whitespace-nowrap">Step 3:</span>
+                            <span>Handshake is established, and low-latency input streaming begins.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+
+        <article id="discovery" class="mb-16">
+            <h2 class="text-2xl font-bold text-purple-400 mb-6 flex items-center gap-3">
+                <span class="p-2 rounded bg-purple-500/10">02</span> Discovery
+            </h2>
+            <div class="prose prose-invert prose-slate">
+                <p class="mb-4 leading-relaxed">
+                    Discovery is what makes the connection process actually feel smooth. 
+                    Instead of forcing someone to type the IP and Port manually the app itself figures out what's nearby.
+
+                    It's a pretty simple process:
+                </p>
+                <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800 mb-4">
+                    <ul class="space-y-4">
+                        <li class="flex gap-4">
+                            <span class="text-purple-500 font-mono font-bold whitespace-nowrap">Step 1:</span>
+                            <span>The client sends out a discovery request. It's basically a broadcast asking, "Hey, is anyone there? (server)".</span>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="text-purple-500 font-mono font-bold whitespace-nowrap">Step 2:</span>
+                            <span>Any server that sees that packet sends a response with its info.</span>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="text-purple-500 font-mono font-bold whitespace-nowrap">Step 3:</span>
+                            <span>The client collects those responses into a nice list so the user can just pick which one they want to join.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+        <article id="logging" class="mb-16">
+            <h2 class="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-3">
+                <span class="p-2 rounded bg-blue-500/10">03</span> Logging & Debugging
+            </h2>
+            <p class="mb-6 text-slate-400">
+                The server generates logs in the console. These logs are vital for troubleshooting errors.<br>
+                Level of logging can be overriden by --log-level (level)
+            </p>
+            
+            <div class="rounded-lg bg-[#0a0a0a] border border-slate-800 p-4 font-mono text-xs overflow-x-auto shadow-inner">
+                [INFO] [Penvia Server Orchestartor] Starting to build server context.<br>
+                [INFO] [Penvia Server Orchestartor] Built the server context.<br>
+                [INFO] [Penvia Server Orchestartor] Starting the Penvia server.<br>
+                [INFO] [Tcp Medium Manager] Manager for TCP is starting.<br>
+                [INFO] [Tcp Medium Manager] Manager for TCP has been started.<br>
+                [INFO] [Udp Medium Manager] Manager for UDP is starting.<br>
+                [INFO] [Tcp Medium Manager] TCP listening loop is starting<br>
+            </div>
+        </article>
+        <article id="cli" class="mb-16">
+            <h2 class="text-2xl font-bold text-white mb-6">Server Usage</h2>
+            <p class="mb-4">The server can be launched with arguments for automation or headless setups:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
+                    <code class="text-blue-400 text-sm">--log-level [number/option]</code>
+                    <p class="text-xs text-slate-500 mt-2">Override the logger severity level. (silent-verbose)</p>
+                </div>
+                <div class="p-4 rounded-lg bg-slate-900/30 border border-slate-800">
+                    <code class="text-blue-400 text-sm">--help</code>
+                    <p class="text-xs text-slate-500 mt-2">Lists all arguments you can use on your server version.</p>
+                </div>
+            </div>
+        </article>
+
+        <div class="p-6 rounded-2xl bg-linear-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+            <h4 class="font-bold text-white mb-2 italic">API</h4>
+            <p class="text-sm text-slate-400 leading-relaxed">
+                I was thinking about releasing the API specification open-source for possible extensions. <br>If you're interested let me know on discord!
+            </p>
+        </div>
+
+    </section>
+</div>
+
+    <footer class="py-20 text-center border-t border-slate-900">
+        <p class="text-slate-500 mb-4">Join the beta and help us refine the bridge.</p>
+        <div class="flex justify-center space-x-6">
+            <a href="https://discord.gg/uxG2kqGzUX" class="hover:text-white transition">Discord</a>
+            <a href="https://github.com/Penvia" class="hover:text-white transition">GitHub</a>
+        </div>
+        <p class="mt-10 text-xs text-slate-600">© 2026 Vulpi. All rights reserved.</p>
+    </footer>
+
+    <script src="/src/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+        });
+    </script>
+</body>
+</html>
